@@ -53,7 +53,7 @@ void loop()
     }
 
     //Send packet to ESP
-    Serial.println(incomingPacket);
+    Serial.write(incomingPacket);
 
   }
 
@@ -70,7 +70,7 @@ void loop()
       else{
         packetToSend.concat(nextChar);
       }
-      delay(10); //Need this for some reason, think about later
+      delay(10); 
       
   }
 
