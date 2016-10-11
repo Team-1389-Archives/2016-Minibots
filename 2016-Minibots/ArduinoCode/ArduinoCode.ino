@@ -1,3 +1,4 @@
+#include <Servo.h>
 
 void setup(){
   Serial.begin(115200);
@@ -5,14 +6,18 @@ void setup(){
 
 
 //If element is equal to 1, read from that indexed pin A0-A5
-int analogPinsRead[] = {0,0,0,0,0,0};
-//If element is equal to 1, read from that indexed pin + 2 2-12
-int digitalPinsRead[] = {0,0,0,0,0,0,0,0,0,0,0};
-//Write value to indexed pin 3,5,6,9,10,11. Again add 2. 
-//Other indexed elements should always be 0 
-int analogPinsWrite[] = {0,0,0,0,0,0,0,0,0,0,0};
-//If element is equal to 1, write to that indexed pin + 2 2-12
-int digitalPinsWrite[] = {0,0,0,0,0,0,0,0,0,0,0};
+int analogPinsRead[6] = {};
+
+//If element is equal to 1, read from that indexed pin
+int digitalPinsRead[14] = {};
+
+//If an index is not null, them write that servo pulse
+//All pins besides 3,5,6,9,10,11 should always be null
+Servo servos[14] = {};
+
+//If element is equal to 1, pin is ready send but still low
+//If element is equal to 2, pin is sending HIGH
+int digitalPinsWrite[14] = {};
 
 boolean packageDone = false;
 String package = "";
@@ -28,96 +33,80 @@ void loop(){
     }
   }  
   if(packageDone){
-    changePorts(package);
-    writeToPorts();
+    updatePorts(package);
+    //writeToPorts();
     packageDone = false;
     package = "";
   }
 
-  
+  //Wait a tenth of a second since last sent package
   if(millis() - startTime > 100){
       readAndSendPorts();
       startTime = millis();
   }
 }
 
-//All lowercase
-void changePorts(String package){
-    //Read or write
-    String function = getValue(package, '|', 0);
-    //Port to write/read to, number not letter
-    String sPort = (getValue(package, '|', 1));
-    int port = sPort.toInt(); 
-    //d or a
-    String type = getValue(package, '|', 2);
-
-    Serial.println(function);
-    Serial.println(port);
-    Serial.println(type);
-
-    if(function == "read"){
-      if(type == "a"){
-        analogPinsRead[port] = 1;
-      }
-      else if(type == "d"){
-        digitalPinsRead[port] = 1;
-      }
-    }
-    else if(function == "write"){
-      if(type == "a"){
-        //PWM
-        //Amount of voltage to write
-        int value = getValue(package, '|', 3).toInt();
-        analogPinsWrite[port] = value;
-      }
-      //else if(type == "d"){
-        //String value = getValue(package, '|', 3);
-        //analogPinsWrite[port] = value;
-      //}
-    }
-}  
-
-String getValue(String data, char separator, int index)
-{
- int found = 0;
-  int strIndex[] = {
-0, -1  };
-  int maxIndex = data.length()-1;
-  for(int i=0; i<=maxIndex && found<=index; i++){
-  if(data.charAt(i)==separator || i==maxIndex){
-  found++;
-  strIndex[0] = strIndex[1]+1;
-  strIndex[1] = (i == maxIndex) ? i+1 : i;
+  
+void updatePorts(String package){
+  if(!setNewPort(package)){
+    //Package is an update to a write, not setting a new port
+     String type = getValue(package, '|', 0); //d or s
+     int port = (getValue(package, '|', 1)).toInt(); //2-13 or 0-6
+     int value = getValue(package, '|', 2).toInt(); //If d, should be 1 or 0. If s, should be <1 and >0
+     
+     //TODO: Add safeguards
+     if(type == "d"){
+        digitalPinsWrite[port] = value + 1;
+        digitalWrite(port, value + 1);
+     }
+     else if(type == "s"){
+         servos[port].write(value);   
+     }
   }
- }
-  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+  
+   /* Serial.println(function);
+    Serial.println(port);
+    Serial.println(type);*/
+
 }
 
-void writeToPorts(){
-  for(int i = 0; i < 11; i++){
-    if(i == 3 - 2 || i == 5 - 2 || i == 6 - 2 || i == 9 - 2 || i == 10 - 2 || i == 11 - 2){
-      analogWrite(i + 2, analogPinsWrite[i]);
-    }
-  }
-  //Do digital later
-}  
-
 void readAndSendPorts(){
-  for(int i = 0; i < 11; i++){
+  for(int i = 2; i < 11; i++){
     if(digitalPinsRead[i] == 1){
-      int value = digitalRead(i + 2);
-      Serial.print("d|");
-      Serial.print(value);
-      Serial.print("\n");
+      int value = digitalRead(i);
+      sendValue("d",i,value);
     }
   }
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i <= 5; i++){
     if(analogPinsRead[i] == 1){
       int value = analogRead(i + 2);
-      Serial.print("a|");
-      Serial.print(value);
-      Serial.print("\n");
+      sendValue("a",i,value);
     }
   }
+}
+
+void sendValue(String type, int port, int value){
+  Serial.print(type);
+  Serial.print(port);
+  Serial.print("|");
+  Serial.print(value);
+  Serial.print("\n");
+}
+
+
+//Utility method, copied from the internet
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+      found++;
+      strIndex[0] = strIndex[1]+1;
+      strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+ }
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 

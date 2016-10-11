@@ -37,7 +37,7 @@ void setup()
 void loop()
 {
 
-  //Looks for packets, sends to ESP
+  //Looks for packets, sends to Arduino
   int packetSize = Udp.parsePacket();
   if (packetSize > 0){ //Packet not empty
     remoteIP = Udp.remoteIP();
