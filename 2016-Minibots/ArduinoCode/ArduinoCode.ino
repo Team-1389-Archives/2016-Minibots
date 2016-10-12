@@ -22,6 +22,7 @@ int digitalPinsWrite[14] = {};
 boolean packageDone = false;
 String package = "";
 long startTime = millis(); 
+int packageCount = 0;
 void loop(){
  if (Serial.available() > 0){
     char c = Serial.read();
@@ -39,10 +40,13 @@ void loop(){
     package = "";
   }
 
-  //Wait a tenth of a second since last sent package
-  if(millis() - startTime > 100){
-      readAndSendPorts();
+  //Limit to 10 packages a second
+  if(packageCount < 10){
+      packageCount = packageCount + readAndSendPorts();
+  }
+  if(millis() - startTime >= 1000){
       startTime = millis();
+      packageCount = 0;
   }
 }
 
@@ -56,33 +60,35 @@ void updatePorts(String package){
      
      //TODO: Add safeguards
      if(type == "d"){
-        digitalPinsWrite[port] = value + 1;
-        digitalWrite(port, value + 1);
+        if(digitalPinsWrite[port] != 0 && (value == 0 || value == 1)){
+          digitalPinsWrite[port] = value + 1;
+          digitalWrite(port, value);
+        }
      }
-     else if(type == "s"){
+     else if(type == "s" && servos[port].attached()){
          servos[port].write(value);   
      }
   }
-  
-   /* Serial.println(function);
-    Serial.println(port);
-    Serial.println(type);*/
 
 }
 
-void readAndSendPorts(){
+int readAndSendPorts(){
+  int count = 0;
   for(int i = 2; i < 11; i++){
     if(digitalPinsRead[i] == 1){
       int value = digitalRead(i);
       sendValue("d",i,value);
+      count++;
     }
   }
   for(int i = 0; i <= 5; i++){
     if(analogPinsRead[i] == 1){
       int value = analogRead(i + 2);
       sendValue("a",i,value);
+      count++;
     }
   }
+  return count;
 }
 
 void sendValue(String type, int port, int value){
