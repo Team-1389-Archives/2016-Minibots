@@ -58,7 +58,7 @@ void updatePorts(String package){
     //Package is an update to a write, not setting a new port
      String type = getValue(package, '|', 0); //d or s
      int port = (getValue(package, '|', 1)).toInt(); //2-13 or 0-6
-     int value = getValue(package, '|', 2).toInt(); //If d, should be 1 or 0. If s, should be <1 and >0
+     int value = getValue(package, '|', 2).toInt(); //If d, should be 1 or 0
      
      if(type == "d"){
         if(digitalPinsWrite[port] != 0 && (value == 0 || value == 1)){
