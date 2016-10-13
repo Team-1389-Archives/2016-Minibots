@@ -58,7 +58,6 @@ void updatePorts(String package){
      int port = (getValue(package, '|', 1)).toInt(); //2-13 or 0-6
      int value = getValue(package, '|', 2).toInt(); //If d, should be 1 or 0. If s, should be <1 and >0
      
-     //TODO: Add safeguards
      if(type == "d"){
         if(digitalPinsWrite[port] != 0 && (value == 0 || value == 1)){
           digitalPinsWrite[port] = value + 1;
@@ -83,7 +82,7 @@ int readAndSendPorts(){
   }
   for(int i = 0; i <= 5; i++){
     if(analogPinsRead[i] == 1){
-      int value = analogRead(i + 2);
+      int value = analogRead(i);
       sendValue("a",i,value);
       count++;
     }
@@ -93,6 +92,7 @@ int readAndSendPorts(){
 
 void sendValue(String type, int port, int value){
   Serial.print(type);
+  Serial.print("|");
   Serial.print(port);
   Serial.print("|");
   Serial.print(value);
