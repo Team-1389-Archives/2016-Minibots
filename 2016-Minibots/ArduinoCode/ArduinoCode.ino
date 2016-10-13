@@ -5,17 +5,19 @@ void setup(){
 }
 
 
-//If element is equal to 1, read from that indexed pin A0-A5
-int analogPinsRead[6] = {};
+//If element is equal to -1, pin is not set to read
+//Otherwise element is equal to last read value
+int analogPinsRead[6] = {-1,-1,-1,-1,-1,-1};
 
-//If element is equal to 1, read from that indexed pin
-int digitalPinsRead[14] = {};
+//If element is equal to -1, pin is not set to read
+//Otherwise element is equal to last read value
+int digitalPinsRead[14] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 
 //If an index is not null, them write that servo pulse
 //All pins besides 3,5,6,9,10,11 should always be null
 Servo servos[14] = {};
 
-//If element is equal to 1, pin is ready send but still low
+//If element is equal to 1, pin is ready to write but still LOW
 //If element is equal to 2, pin is sending HIGH
 int digitalPinsWrite[14] = {};
 
@@ -74,17 +76,23 @@ void updatePorts(String package){
 int readAndSendPorts(){
   int count = 0;
   for(int i = 2; i < 11; i++){
-    if(digitalPinsRead[i] == 1){
+    if(digitalPinsRead[i] >= 0){
       int value = digitalRead(i);
-      sendValue("d",i,value);
-      count++;
+      if(value != digitalPinsRead[i]){ //value has changed
+        sendValue("d",i,value);
+        count++;
+        digitalPinsRead[i] = value;
+      }
     }
   }
   for(int i = 0; i <= 5; i++){
-    if(analogPinsRead[i] == 1){
+    if(analogPinsRead[i] >= 0){
       int value = analogRead(i);
-      sendValue("a",i,value);
-      count++;
+      if(abs(value - analogPinsRead[i]) > 50){ //value has changed
+        sendValue("a",i,value);
+        count++;
+        analogPinsRead[i] = value;
+      }
     }
   }
   return count;

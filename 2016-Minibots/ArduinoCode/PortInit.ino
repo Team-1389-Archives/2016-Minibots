@@ -14,10 +14,10 @@ boolean setNewPort(String package){
 
   if(function == "r"){
       if(type == "a"){
-        analogPinsRead[port] = 1;
+        analogPinsRead[port] = 0;
       }
       else if(type == "d"){
-        digitalPinsRead[port] = 1;
+        digitalPinsRead[port] = 0;
         digitalPins[port] = 1;
       }
   }
@@ -41,7 +41,7 @@ boolean setNewPort(String package){
 
 boolean checkPort(int port, String type){
   if(type == "a"){
-    return port >= 0 && port <= 5 && analogPinsRead[port] == 0;
+    return port >= 0 && port <= 5 && analogPinsRead[port] < 0;
   }
   else if(type == "d"){
     return port >= 0 && port <= 13 && digitalPins[port] == 0;
