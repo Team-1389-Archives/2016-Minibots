@@ -7,9 +7,11 @@ abstract class Pin {
 	protected Constants.TYPE type; 
 	protected int pin;
 	Pin(Constants.TYPE type, int pin){
-		
-		this.pin = pin;
 		this.type = type;
+		this.pin = pin;
+		if(!Arduino.attachPin(this)){
+			throw new IllegalArgumentException();
+		}
 	}
 	
 	protected abstract void sendMessage();

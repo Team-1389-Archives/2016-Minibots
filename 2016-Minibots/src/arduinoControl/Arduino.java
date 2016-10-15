@@ -9,6 +9,11 @@ public class Arduino {
 	private static AnalogRead[] analogPins = new AnalogRead[6];
 
 
+	/**
+	 * Checks first to see if pin in message is legit and there is already a class waiting to recieve.
+	 * Then sends it to that class
+	 * @param message
+	 */
 	synchronized static public void updateValue(String message){
 		System.out.println(message);
 		boolean goodMessage = false;
@@ -20,28 +25,31 @@ public class Arduino {
 
 			if(type.equals("a")){
 				if(analogPins[pinNum] != null){
-					AnalogRead pin = analogPins[pinNum];
-					pin.update(value);
-					goodMessage = true; 
+					Pin pin = analogPins[pinNum];
+					if(pin instanceof AnalogRead){ //Should always be AnalogRead, but just to make sure
+						((AnalogRead) pin).update(value);
+						goodMessage = true; 
+					}
 				}
 			}
 			else if(type.equals("d")){
 				if(digitalPins[pinNum] != null){
 					Pin pin = digitalPins[pinNum];
-					if(pin instanceof DigitalRead){
+					if(pin instanceof DigitalRead){ //Could be a digital write or servo/pwm pin
 						((DigitalRead) pin).update(value);
 						goodMessage = true; 
 					}
 				}
-					
+
 			}
-				
+
 		}
 		catch(Exception e){
 		}
-		
-		System.out.println("BAD MESSAGE");
 
+		if(!goodMessage){
+			System.out.println("BAD MESSAGE");
+		}
 	}
 
 
@@ -49,7 +57,7 @@ public class Arduino {
 	synchronized static public boolean attachPin(Pin pin){
 		int pinNum = pin.getPinNum();
 		TYPE pinType = pin.getType();
-		if(pin instanceof AnalogRead && analogPins[pinNum] == null){
+		if(pinType == TYPE.ANALOG && analogPins[pinNum] == null){
 			analogPins[pinNum] = (AnalogRead) pin;
 			return true;
 		}
