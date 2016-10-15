@@ -2,7 +2,7 @@ package arduinoControl;
 
 import arduinoControl.Constants.TYPE;
 
-public class Read extends Pin{
+class Read extends Pin{
 
 	Read(TYPE type, int pin) {
 		super(type, pin);
@@ -12,6 +12,10 @@ public class Read extends Pin{
 	@Override
 	protected void sendMessage() {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	protected void update(int value){
 		
 	}
 
