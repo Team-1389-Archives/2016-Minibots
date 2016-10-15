@@ -2,7 +2,7 @@ package arduinoControl;
 
 import arduinoControl.Constants.TYPE;
 
-public class Servo extends Pin{
+public class Servo extends Write{
 
 	Servo(TYPE type, int pin) {
 		super(type, pin);
