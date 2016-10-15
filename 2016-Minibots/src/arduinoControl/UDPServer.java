@@ -6,8 +6,8 @@ import java.net.*;
 public class UDPServer extends Thread{
 
     private DatagramSocket recieveSocket;
-    private DatagramSocket sendSocket;
-    private InetAddress ipOfESP; 
+    private static DatagramSocket sendSocket;
+    private static InetAddress ipOfESP; 
     
     UDPServer() throws SocketException, UnknownHostException{
 		recieveSocket = new DatagramSocket(Constants.RECIEVE_PORT);
@@ -49,7 +49,7 @@ public class UDPServer extends Thread{
 	 * @param message The message to send in the above format
 	 * @throws IOException 
 	 */
-	public void sendString(String message) throws IOException{
+	public static void sendString(String message) throws IOException{
 		sendSocket.send(new DatagramPacket(message.getBytes(), message.length(), ipOfESP, Constants.SEND_PORT));
 	}
 

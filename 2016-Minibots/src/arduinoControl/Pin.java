@@ -7,21 +7,34 @@ abstract class Pin {
 	protected Constants.TYPE type; 
 	protected int pin;
 	Pin(Constants.TYPE type, int pin){
-		this.type = type;
-		this.pin = pin;
-		if(!Arduino.attachPin(this)){
+		if(check()){
+			this.type = type;
+			this.pin = pin;
+			if(!Arduino.attachPin(this)){
+				throw new IllegalArgumentException();
+			}
+		}
+		else{
 			throw new IllegalArgumentException();
 		}
 	}
-	
-	protected abstract void sendMessage();
+
+	/**
+	 * Can be overridden by implementations to check condition before attaching class.
+	 * Allows implementations to check their own stuff too.
+	 * This is actually really clever, if i do say so myself.
+	 * Im 99% sure that java works this way.
+	 * @return True if pin is ok, false if not
+	 */
+	protected boolean check(){
+		return true;
+	}
 
 	protected int getPinNum() {
 		return pin;
 	}
 
 	protected TYPE getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return type;
 	}
 }

@@ -4,19 +4,19 @@ import arduinoControl.Constants.TYPE;
 
 class Read extends Pin{
 
+	int value;
 	Read(TYPE type, int pin) {
 		super(type, pin);
-		// TODO Auto-generated constructor stub
+		value = 0;
 	}
 
-	@Override
-	protected void sendMessage() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	protected void update(int value){
-		
+		this.value = value;
+	}
+	
+	public int getValue(){
+		return value;
 	}
 
 }
