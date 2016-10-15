@@ -41,7 +41,7 @@ void loop()
   int packetSize = Udp.parsePacket();
   if (packetSize > 0){ //Packet not empty
     remoteIP = Udp.remoteIP();
-    remotePort = Udp.remotePort();
+    //remotePort = Udp.remotePort();
 
     char incomingPacket[packetSize];
     int len = Udp.read(incomingPacket, packetSize);
@@ -96,7 +96,7 @@ void sendPacket(String packet){
   Serial.println(remotePort);
   */
 
-  Udp.beginPacket(remoteIP, remotePort);
+  Udp.beginPacket(remoteIP, 4211);
   Udp.write(buf, bufferLength);
   Udp.endPacket();
   
