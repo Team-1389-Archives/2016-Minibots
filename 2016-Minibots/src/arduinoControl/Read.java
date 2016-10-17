@@ -19,4 +19,12 @@ class Read extends Pin{
 		return value;
 	}
 
+
+	@Override
+	protected String getInitilizationMessage() {
+		String t = getType() == TYPE.ANALOG? "a" : "d";
+		return t + "|" + getPinNum() + "|r;";
+		
+	}
+
 }

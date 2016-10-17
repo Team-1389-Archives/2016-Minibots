@@ -1,5 +1,7 @@
 package arduinoControl;
 
+import java.io.IOException;
+
 import arduinoControl.Constants.TYPE;
 
 abstract class Pin {
@@ -7,11 +9,16 @@ abstract class Pin {
 	protected Constants.TYPE type; 
 	protected int pin;
 	Pin(Constants.TYPE type, int pin){
+		this.type = type;
+		this.pin = pin;
 		if(check()){
-			this.type = type;
-			this.pin = pin;
 			if(!Arduino.attachPin(this)){
 				throw new IllegalArgumentException();
+			}
+			try {
+				UDPServer.sendString(getInitilizationMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		else{
@@ -37,4 +44,9 @@ abstract class Pin {
 	protected TYPE getType() {
 		return type;
 	}
+	
+	/**
+	 * @return The initlization message
+	 */
+	protected abstract String getInitilizationMessage();
 }

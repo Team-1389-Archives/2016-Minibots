@@ -5,14 +5,16 @@ import java.net.*;
 
 public class UDPServer extends Thread{
 
-    private DatagramSocket recieveSocket;
+    private static DatagramSocket recieveSocket;
     private static DatagramSocket sendSocket;
     private static InetAddress ipOfESP; 
     
-    UDPServer() throws SocketException, UnknownHostException{
+    //TODO: Change all method to not static
+    public static void initializeServer() throws IOException{
 		recieveSocket = new DatagramSocket(Constants.RECIEVE_PORT);
 		sendSocket = new DatagramSocket(Constants.SEND_PORT);
 		ipOfESP = InetAddress.getByName("192.168.4.1"); 
+		sendString(""); //Gives relevant info
 		
 	}
 	
@@ -50,6 +52,7 @@ public class UDPServer extends Thread{
 	 * @throws IOException 
 	 */
 	public static void sendString(String message) throws IOException{
+		System.out.println(message);
 		sendSocket.send(new DatagramPacket(message.getBytes(), message.length(), ipOfESP, Constants.SEND_PORT));
 	}
 

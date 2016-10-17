@@ -6,8 +6,8 @@ import arduinoControl.Constants.TYPE;
 
 public class Servo extends Write{
 
-	Servo(TYPE type, int pin) {
-		super(type, pin);
+	Servo(int pin) {
+		super(TYPE.DIGITAL, pin);
 	}
 
 	@Override()
@@ -19,5 +19,10 @@ public class Servo extends Write{
 		if(value <= 180 && value >= 0){
 			super.send(value, "s");
 		}
+	}
+
+	@Override
+	protected String getWriteType() {
+		return "s";
 	}
 }

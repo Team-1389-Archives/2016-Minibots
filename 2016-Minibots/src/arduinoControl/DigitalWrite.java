@@ -14,4 +14,9 @@ public class DigitalWrite extends Write{
 		}
 	}
 
+	@Override
+	protected String getWriteType() {
+		return "d";
+	}
+
 }
