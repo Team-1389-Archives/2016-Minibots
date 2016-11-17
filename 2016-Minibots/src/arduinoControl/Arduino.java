@@ -2,7 +2,7 @@ package arduinoControl;
 
 import arduinoControl.Constants.TYPE;
 
-public class Arduino {
+class Arduino {
 
 	//Null means no pin attached yet
 	private static Pin[] digitalPins = new Pin[14]; //0,1 should always be null

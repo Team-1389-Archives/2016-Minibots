@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Test extends JPanel implements KeyListener{
+class Test extends JPanel implements KeyListener{
 
 	static int change = 0;
 	public static void main(String[] args) throws IOException, InterruptedException{

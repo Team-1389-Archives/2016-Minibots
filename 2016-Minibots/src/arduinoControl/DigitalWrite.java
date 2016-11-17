@@ -2,7 +2,7 @@ package arduinoControl;
 
 import java.io.IOException;
 
-public class DigitalWrite extends Write{
+class DigitalWrite extends Write{
 
 	DigitalWrite(int pin) {
 		super(Constants.TYPE.DIGITAL, pin);
