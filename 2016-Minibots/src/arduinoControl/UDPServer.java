@@ -3,7 +3,7 @@ package arduinoControl;
 import java.io.IOException;
 import java.net.*;
 
-public class UDPServer extends Thread{
+class UDPServer extends Thread{
 
     private static DatagramSocket recieveSocket;
     private static DatagramSocket sendSocket;
