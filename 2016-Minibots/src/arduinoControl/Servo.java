@@ -6,7 +6,7 @@ import arduinoControl.Constants.TYPE;
 
 public class Servo extends Write{
 
-	Servo(int pin) {
+	public Servo(int pin) {
 		super(TYPE.DIGITAL, pin);
 	}
 
