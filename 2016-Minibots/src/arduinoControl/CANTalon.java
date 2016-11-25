@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class CANTalon extends Servo{
 
-	CANTalon(int pin) {
+	public CANTalon(int pin) {
 		super(pin);
 	}
 	@Override
