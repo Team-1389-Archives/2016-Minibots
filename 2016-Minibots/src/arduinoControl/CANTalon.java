@@ -10,7 +10,7 @@ public class CANTalon extends Servo{
 	@Override
 	public void send(int value) throws IOException{
 		if(value >= -1 && value <= 1){
-			super.send((int)((value+1)*90), "s");
+			super.send((int)((value+1)*90));
 		}
 	}
 
