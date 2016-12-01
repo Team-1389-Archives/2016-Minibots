@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Victor{
 	Servo servo;
-	Victor(int pin) {
+	public Victor(int pin) {
 		this.servo=new Servo(pin);
 	}
 	public void set(double pwr){
