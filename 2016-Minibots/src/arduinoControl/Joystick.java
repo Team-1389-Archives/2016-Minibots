@@ -21,9 +21,16 @@ public class Joystick {
 		Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 		if (port < controllers.length) {
 			jinCont = controllers[joyPort];
-
+			initPortLists();
 		} else {
 			jinCont = null;
+		}
+	}
+
+	public static void printControllers() {
+		Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+		for (int c = 0; c < controllers.length; c++) {
+			System.out.println(c + " " + controllers[c].getName());
 		}
 	}
 
